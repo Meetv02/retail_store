@@ -1,5 +1,6 @@
+import java.io.Serializable;
 import java.util.ArrayList;
-abstract class User {
+abstract class User implements Serializable{
     private String uName;
     private String uPwd;
     private String fullName;

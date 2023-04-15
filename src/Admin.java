@@ -1,15 +1,15 @@
 import java.io.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.ListIterator;
-import java.util.Scanner;
-
+import java.util.*;
 
 interface adminInterface {
   void addProduct(ArrayList<Product> productArrayList) throws IOException;
+
   int totalProduct(ArrayList<Product> productArrayList);
+
   int maxProfit(ArrayList<Product> productArrayList);
+
   void fineCalculate(ArrayList<RegisteredUsers> regUsers);
 }
 
@@ -26,7 +26,7 @@ class Admin implements adminInterface {
   static int idcnt = 1;
 
   public void addProduct(ArrayList<Product> productArrayList)
-    throws IOException {
+      throws IOException {
     Scanner sc = new Scanner(System.in);
     InputStreamReader r = new InputStreamReader(System.in);
     BufferedReader br = new BufferedReader(r);
@@ -53,14 +53,13 @@ class Admin implements adminInterface {
     int lmt = sc.nextInt();
 
     Product newProduct = new Product(
-      idcnt++,
-      productName,
-      qty,
-      baseprice,
-      sellprice,
-      discountprice,
-      lmt
-    );
+        idcnt++,
+        productName,
+        qty,
+        baseprice,
+        sellprice,
+        discountprice,
+        lmt);
     productArrayList.add(newProduct);
   }
 
@@ -83,7 +82,7 @@ class Admin implements adminInterface {
   }
 
   public void fineCalculate(ArrayList<RegisteredUsers> regUsers) {
-    
+
     ListIterator<RegisteredUsers> iterate = regUsers.listIterator();
     while (iterate.hasNext()) {
       int fine = 0;
@@ -109,18 +108,15 @@ class Admin implements adminInterface {
   void DisplayRegUsers(ArrayList<RegisteredUsers> regUsers) {
     // TODO :
     System.out.println(
-      "------------------------------------- User Profile --------------------------------"
-    );
+        "------------------------------------- User Profile --------------------------------");
     System.out.println("Full Name  User Name   Password  isMember? ");
     System.out.println(
-      "-----------------------------------------------------------------------------------"
-    );
+        "-----------------------------------------------------------------------------------");
     for (RegisteredUsers u : regUsers) {
       u.ShowProfile();
       System.out.println("");
     }
     System.out.println(
-      "-----------------------------------------------------------------------------------"
-    );
+        "-----------------------------------------------------------------------------------");
   }
 }
