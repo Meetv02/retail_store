@@ -102,24 +102,29 @@ public class Main {
         "Product ID\tProduct Name \t Product Qty \t Availability \t Base price \t Sell price \t Discount price \t Return limit");
 
     String avail;
-    for (Product p : productArrayList) {
-      if (p.getpQty() > 0)
-        avail = "In Stock";
-      else
-        avail = "Out of Stock";
-      System.out.println(
-          "   " +
-              p.getpId() +
-              "\t\t     " +
-              p.getpName() +
-              "\t\t " +
-              p.getpQty() +
-              "\t    " + avail + " \t      " +
-              p.getBasePrice() +
-              " \t\t  " +
-              p.getSellPrice() +
-              "\t\t  " +
-              p.getDiscoutPrice() + "\t\t\t" + p.getLimit());
+    if (productArrayList.size() != 0) {
+
+      for (Product p : productArrayList) {
+        if (p.getpQty() > 0)
+          avail = "In Stock";
+        else
+          avail = "Out of Stock";
+        System.out.println(
+            "   " +
+                p.getpId() +
+                "\t\t     " +
+                p.getpName() +
+                "\t\t " +
+                p.getpQty() +
+                "\t    " + avail + " \t      " +
+                p.getBasePrice() +
+                " \t\t  " +
+                p.getSellPrice() +
+                "\t\t  " +
+                p.getDiscoutPrice() + "\t\t\t" + p.getLimit());
+      }
+    } else {
+      System.out.println("No product available");
     }
     System.out.println(
         "-----------------------------------------------------------------------------------");
@@ -180,7 +185,8 @@ public class Main {
             System.out.println("Invalid choice!!");
         }
       } catch (Exception e) {
-        System.out.println("Excepetion caught--->" + e);
+        System.out.println("Excepetion caught--->");
+        e.printStackTrace();
       }
     }
   }
@@ -215,8 +221,12 @@ public class Main {
     System.out.println();
 
     // Store Books data
-    ArrayList<Product> productArrayList = new ArrayList<Product>();
+    ArrayList<Product> productArrayList = new ArrayList<>();
     ArrayList<RegisteredUsers> regUsers = new ArrayList<>();
+    regUsers = fileIO.readUsers("users.txt");
+    if (fileIO.readProduct("products.txt") != null) {
+      productArrayList = fileIO.readProduct("products.txt");
+     }
 
     int ch = 0;
 
@@ -314,10 +324,10 @@ public class Main {
                   regupwd,
                   regufullname,
                   member);
-                  regUsers.add(newuser);
-                  fileIO.writeToFile("users.txt", regUsers);
+              regUsers.add(newuser);
+              // fileIO.writeUsers("users.txt", regUsers);
               System.out.println("User Successfully registered.........");
-              regUsers = fileIO.readFromFile("users.txt");
+              //
               ListIterator<RegisteredUsers> iterate = regUsers.listIterator();
               while (iterate.hasNext()) {
                 RegisteredUsers u = iterate.next();
@@ -328,6 +338,8 @@ public class Main {
 
             break;
           case 4:
+            fileIO.writeUsers("users.txt", regUsers);
+            fileIO.writeProduct("products.txt", productArrayList);
             System.exit(0);
             break;
           default:

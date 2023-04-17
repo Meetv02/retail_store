@@ -60,6 +60,7 @@ class Admin implements adminInterface {
         sellprice,
         discountprice,
         lmt);
+    System.out.println(newProduct.getpId() + " " + newProduct.getBasePrice()+" " + newProduct.getDiscoutPrice()+" " + newProduct.getpName()+" " + newProduct.getpQty()+" " + newProduct.getSellPrice() +" " + newProduct.getLimit());
     productArrayList.add(newProduct);
   }
 
