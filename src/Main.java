@@ -327,6 +327,7 @@ public class Main {
                 regufullname,
                 member
               );
+              
               regUsers.add(newuser);
               System.out.println("User Successfully registered.........");
             }
