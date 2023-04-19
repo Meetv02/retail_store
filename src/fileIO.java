@@ -1,11 +1,12 @@
 import java.io.*;
+import java.net.FileNameMap;
 import java.util.*;
 
 public class fileIO {
     public static void writeUsers(String fileName, ArrayList<RegisteredUsers> regUsers) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
             oos.writeObject(regUsers);
-//            System.out.println("user information written to file successfully!");
+            // System.out.println("user information written to file successfully!");
             oos.flush();
             oos.close();
         } catch (IOException ex) {
@@ -15,9 +16,14 @@ public class fileIO {
     }
 
     public static ArrayList<RegisteredUsers> readUsers(String fileName) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+        try {
+            File newFile = new File(fileName);
+            if (newFile.length() == 0) {
+                return null;
+            }
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
             ArrayList<RegisteredUsers> regUsers = (ArrayList<RegisteredUsers>) ois.readObject();
-//            System.out.println("user information read from file successfully!");
+            // System.out.println("user information read from file successfully!");
             ois.close();
             return regUsers;
         } catch (IOException | ClassNotFoundException ex) {
@@ -29,7 +35,7 @@ public class fileIO {
     public static void writeProduct(String fileName, ArrayList<Product> regUsers) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
             oos.writeObject(regUsers);
-//            System.out.println("Product information written to file successfully!");
+            // System.out.println("Product information written to file successfully!");
             oos.flush();
             oos.close();
         } catch (IOException ex) {
@@ -39,9 +45,14 @@ public class fileIO {
     }
 
     public static ArrayList<Product> readProduct(String fileName) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+        try {
+            File newFile = new File(fileName);
+            if (newFile.length() == 0) {
+                return null;
+            }
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
             ArrayList<Product> products = (ArrayList<Product>) ois.readObject();
-//            System.out.println("Product information read from file successfully!");
+            // System.out.println("Product information read from file successfully!");
             ois.close();
             return products;
         } catch (IOException | ClassNotFoundException ex) {

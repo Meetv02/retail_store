@@ -26,7 +26,7 @@ class Admin implements adminInterface {
   static int idcnt = 1;
 
   public void addProduct(ArrayList<Product> productArrayList)
-          throws IOException {
+      throws IOException {
     Scanner sc = new Scanner(System.in);
     InputStreamReader r = new InputStreamReader(System.in);
     BufferedReader br = new BufferedReader(r);
@@ -52,18 +52,26 @@ class Admin implements adminInterface {
     System.out.println("Limit for return product(in Days): ");
     int lmt = sc.nextInt();
 
-    idcnt=productArrayList.get(productArrayList.size()-1).getpId()+1;
+    if (productArrayList.size() == 0) {
+      idcnt = 1;
+    } else {
+      idcnt = productArrayList.get(productArrayList.size() - 1).getpId() + 1;
+    }
+
     Product newProduct = new Product(
-            idcnt,
-            productName,
-            qty,
-            baseprice,
-            sellprice,
-            discountprice,
-            lmt);
-    System.out.println(newProduct.getpId() + " " + newProduct.getBasePrice() + " " + newProduct.getDiscoutPrice() + " " + newProduct.getpName() + " " + newProduct.getpQty() + " " + newProduct.getSellPrice() + " " + newProduct.getLimit());
+        idcnt,
+        productName,
+        qty,
+        baseprice,
+        sellprice,
+        discountprice,
+        lmt);
+    // System.out.println(newProduct.getpId() + " " + newProduct.getBasePrice() + "
+    // " + newProduct.getDiscoutPrice() + " " + newProduct.getpName() + " " +
+    // newProduct.getpQty() + " " + newProduct.getSellPrice() + " " +
+    // newProduct.getLimit());
     productArrayList.add(newProduct);
-    fileIO.writeProduct("products.txt",productArrayList);
+    fileIO.writeProduct("products.txt", productArrayList);
   }
 
   public int totalProduct(ArrayList<Product> productArrayList) {
@@ -110,24 +118,24 @@ class Admin implements adminInterface {
 
   void DisplayRegUsers(ArrayList<RegisteredUsers> regUsers) {
     System.out.println(
-            "------------------------------------- User Profile --------------------------------");
+        "------------------------------------- User Profile --------------------------------");
     System.out.println("Full Name  User Name   Password  isMember? ");
     System.out.println(
-            "-----------------------------------------------------------------------------------");
+        "-----------------------------------------------------------------------------------");
     for (RegisteredUsers u : regUsers) {
       u.ShowProfile();
       System.out.println("");
     }
     System.out.println(
-            "-----------------------------------------------------------------------------------");
+        "-----------------------------------------------------------------------------------");
   }
 
   public static void AdmindisplayProductCatalog(
-          ArrayList<Product> productArrayList) {
+      ArrayList<Product> productArrayList) {
     System.out.println(
-            "--------------------------------- Product Catalog ---------------------------------");
+        "--------------------------------- Product Catalog ---------------------------------");
     System.out.println(
-            "Product ID\tProduct Name \t Product Qty \t Availability \t Base price \t Sell price \t Discount price \t Return limit");
+        "Product ID\tProduct Name \t Product Qty \t Availability \t Base price \t Sell price \t Discount price \t Return limit");
 
     String avail;
     if (productArrayList.size() != 0) {
@@ -138,18 +146,18 @@ class Admin implements adminInterface {
         else
           avail = "Out of Stock";
         System.out.println(
-                "   " +
-                        p.getpId() +
-                        "\t\t     " +
-                        p.getpName() +
-                        "\t\t " +
-                        p.getpQty() +
-                        "\t    " + avail + " \t      " +
-                        p.getBasePrice() +
-                        " \t\t  " +
-                        p.getSellPrice() +
-                        "\t\t  " +
-                        p.getDiscoutPrice() + "\t\t\t" + p.getLimit());
+            "   " +
+                p.getpId() +
+                "\t\t     " +
+                p.getpName() +
+                "\t\t " +
+                p.getpQty() +
+                "\t    " + avail + " \t      " +
+                p.getBasePrice() +
+                " \t\t  " +
+                p.getSellPrice() +
+                "\t\t  " +
+                p.getDiscoutPrice() + "\t\t\t" + p.getLimit());
       }
     } else {
       System.out.println("No product available");
@@ -158,11 +166,11 @@ class Admin implements adminInterface {
   }
 
   public static void AdminLogin(
-          Admin admin) {
+      Admin admin) {
     Scanner scan = new Scanner(System.in);
     while (admin != null) {
       System.out.println(
-              "------------------------------------ Admin Panel ----------------------------------");
+          "------------------------------------ Admin Panel ----------------------------------");
       System.out.println("1--->Registered Users");
       System.out.println("2--->Add Product");
       System.out.println("3--->Display Products");
@@ -171,7 +179,7 @@ class Admin implements adminInterface {
       System.out.println("6--->Calculate Fine");
       System.out.println("7--->LogOut");
       System.out.println(
-              "-----------------------------------------------------------------------------------");
+          "-----------------------------------------------------------------------------------");
 
       try {
         System.out.println("Enter your choice : ");
@@ -191,7 +199,7 @@ class Admin implements adminInterface {
             if (fileIO.readProduct("products.txt") != null) {
               productArrayList = fileIO.readProduct("products.txt");
               admin.addProduct(productArrayList);
-            }else{
+            } else {
               productArrayList = new ArrayList<>();
               admin.addProduct(productArrayList);
             }
@@ -199,17 +207,18 @@ class Admin implements adminInterface {
           case 3:
             if (fileIO.readProduct("products.txt") != null) {
               productArrayList = fileIO.readProduct("products.txt");
-              AdmindisplayProductCatalog(productArrayList);
-            }else{
+              // AdmindisplayProductCatalog(productArrayList);
+            } else {
               System.out.println("No products To Display");
             }
+            AdmindisplayProductCatalog(productArrayList);
             break;
           case 4:
             if (fileIO.readProduct("products.txt") != null) {
               productArrayList = fileIO.readProduct("products.txt");
               int total = admin.totalProduct(productArrayList);
               System.out.println("Total Availble Products : " + total);
-            }else{
+            } else {
               System.out.println("No products Available");
             }
             break;
@@ -218,7 +227,7 @@ class Admin implements adminInterface {
               productArrayList = fileIO.readProduct("products.txt");
               int mProfit = admin.maxProfit(productArrayList);
               System.out.println("Maximum profit :  " + mProfit);
-            }else{
+            } else {
               System.out.println("No products Available");
             }
             break;
@@ -226,14 +235,14 @@ class Admin implements adminInterface {
             if (fileIO.readUsers("users.txt") != null) {
               regUsers = fileIO.readUsers("users.txt");
               admin.fineCalculate(regUsers);
-            }else{
+            } else {
               System.out.println("No users registered!!");
             }
-//            if (regUsers.size() == 0) {
-//              System.out.println("No users registered!!");
-//            } else {
-//              admin.fineCalculate(regUsers);
-//            }
+            // if (regUsers.size() == 0) {
+            // System.out.println("No users registered!!");
+            // } else {
+            // admin.fineCalculate(regUsers);
+            // }
             break;
           case 7:
             admin = null;

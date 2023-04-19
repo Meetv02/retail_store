@@ -205,7 +205,7 @@ public class Main {
             String regufullname = scan.next();
             System.out.println("Enter Username : ");
             String reguuname = scan.next();
-            regUsers=null;
+            regUsers=new ArrayList<>();
             if (fileIO.readUsers("users.txt") != null) {
               regUsers = fileIO.readUsers("users.txt");
               if (isUsernameTaken(regUsers, regufullname)) {
