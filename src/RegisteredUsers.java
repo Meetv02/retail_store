@@ -31,7 +31,6 @@ class RegisteredUsers extends User {
 
     this.issueDate = issueDate;
   }
-
   public void setReturnDate(LocalDate returnDate) {
     this.returnDate = returnDate;
   }
@@ -49,6 +48,7 @@ class RegisteredUsers extends User {
       "           " +
       ismemb
     );
+
     System.out.print("Products Bought : ");
     ListIterator<Product> iterate = boughtProducts.listIterator();
     while (iterate.hasNext()) {

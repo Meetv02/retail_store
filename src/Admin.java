@@ -26,7 +26,7 @@ class Admin implements adminInterface {
   static int idcnt = 1;
 
   public void addProduct(ArrayList<Product> productArrayList)
-      throws IOException {
+          throws IOException {
     Scanner sc = new Scanner(System.in);
     InputStreamReader r = new InputStreamReader(System.in);
     BufferedReader br = new BufferedReader(r);
@@ -52,16 +52,18 @@ class Admin implements adminInterface {
     System.out.println("Limit for return product(in Days): ");
     int lmt = sc.nextInt();
 
+    idcnt=productArrayList.get(productArrayList.size()-1).getpId()+1;
     Product newProduct = new Product(
-        idcnt++,
-        productName,
-        qty,
-        baseprice,
-        sellprice,
-        discountprice,
-        lmt);
-    System.out.println(newProduct.getpId() + " " + newProduct.getBasePrice()+" " + newProduct.getDiscoutPrice()+" " + newProduct.getpName()+" " + newProduct.getpQty()+" " + newProduct.getSellPrice() +" " + newProduct.getLimit());
+            idcnt,
+            productName,
+            qty,
+            baseprice,
+            sellprice,
+            discountprice,
+            lmt);
+    System.out.println(newProduct.getpId() + " " + newProduct.getBasePrice() + " " + newProduct.getDiscoutPrice() + " " + newProduct.getpName() + " " + newProduct.getpQty() + " " + newProduct.getSellPrice() + " " + newProduct.getLimit());
     productArrayList.add(newProduct);
+    fileIO.writeProduct("products.txt",productArrayList);
   }
 
   public int totalProduct(ArrayList<Product> productArrayList) {
@@ -107,17 +109,143 @@ class Admin implements adminInterface {
   }
 
   void DisplayRegUsers(ArrayList<RegisteredUsers> regUsers) {
-    // TODO :
     System.out.println(
-        "------------------------------------- User Profile --------------------------------");
+            "------------------------------------- User Profile --------------------------------");
     System.out.println("Full Name  User Name   Password  isMember? ");
     System.out.println(
-        "-----------------------------------------------------------------------------------");
+            "-----------------------------------------------------------------------------------");
     for (RegisteredUsers u : regUsers) {
       u.ShowProfile();
       System.out.println("");
     }
     System.out.println(
-        "-----------------------------------------------------------------------------------");
+            "-----------------------------------------------------------------------------------");
+  }
+
+  public static void AdmindisplayProductCatalog(
+          ArrayList<Product> productArrayList) {
+    System.out.println(
+            "--------------------------------- Product Catalog ---------------------------------");
+    System.out.println(
+            "Product ID\tProduct Name \t Product Qty \t Availability \t Base price \t Sell price \t Discount price \t Return limit");
+
+    String avail;
+    if (productArrayList.size() != 0) {
+
+      for (Product p : productArrayList) {
+        if (p.getpQty() > 0)
+          avail = "In Stock";
+        else
+          avail = "Out of Stock";
+        System.out.println(
+                "   " +
+                        p.getpId() +
+                        "\t\t     " +
+                        p.getpName() +
+                        "\t\t " +
+                        p.getpQty() +
+                        "\t    " + avail + " \t      " +
+                        p.getBasePrice() +
+                        " \t\t  " +
+                        p.getSellPrice() +
+                        "\t\t  " +
+                        p.getDiscoutPrice() + "\t\t\t" + p.getLimit());
+      }
+    } else {
+      System.out.println("No product available");
+    }
+    System.out.println("-----------------------------------------------------------------------------------");
+  }
+
+  public static void AdminLogin(
+          Admin admin) {
+    Scanner scan = new Scanner(System.in);
+    while (admin != null) {
+      System.out.println(
+              "------------------------------------ Admin Panel ----------------------------------");
+      System.out.println("1--->Registered Users");
+      System.out.println("2--->Add Product");
+      System.out.println("3--->Display Products");
+      System.out.println("4--->Total Products");
+      System.out.println("5--->Maximum Profit");
+      System.out.println("6--->Calculate Fine");
+      System.out.println("7--->LogOut");
+      System.out.println(
+              "-----------------------------------------------------------------------------------");
+
+      try {
+        System.out.println("Enter your choice : ");
+        int ch = scan.nextInt();
+
+        ArrayList<Product> productArrayList = new ArrayList<>();
+        ArrayList<RegisteredUsers> regUsers = new ArrayList<>();
+
+        switch (ch) {
+          case 1:
+            if (fileIO.readUsers("users.txt") != null) {
+              regUsers = fileIO.readUsers("users.txt");
+            }
+            admin.DisplayRegUsers(regUsers);
+            break;
+          case 2:
+            if (fileIO.readProduct("products.txt") != null) {
+              productArrayList = fileIO.readProduct("products.txt");
+              admin.addProduct(productArrayList);
+            }else{
+              productArrayList = new ArrayList<>();
+              admin.addProduct(productArrayList);
+            }
+            break;
+          case 3:
+            if (fileIO.readProduct("products.txt") != null) {
+              productArrayList = fileIO.readProduct("products.txt");
+              AdmindisplayProductCatalog(productArrayList);
+            }else{
+              System.out.println("No products To Display");
+            }
+            break;
+          case 4:
+            if (fileIO.readProduct("products.txt") != null) {
+              productArrayList = fileIO.readProduct("products.txt");
+              int total = admin.totalProduct(productArrayList);
+              System.out.println("Total Availble Products : " + total);
+            }else{
+              System.out.println("No products Available");
+            }
+            break;
+          case 5:
+            if (fileIO.readProduct("products.txt") != null) {
+              productArrayList = fileIO.readProduct("products.txt");
+              int mProfit = admin.maxProfit(productArrayList);
+              System.out.println("Maximum profit :  " + mProfit);
+            }else{
+              System.out.println("No products Available");
+            }
+            break;
+          case 6:
+            if (fileIO.readUsers("users.txt") != null) {
+              regUsers = fileIO.readUsers("users.txt");
+              admin.fineCalculate(regUsers);
+            }else{
+              System.out.println("No users registered!!");
+            }
+//            if (regUsers.size() == 0) {
+//              System.out.println("No users registered!!");
+//            } else {
+//              admin.fineCalculate(regUsers);
+//            }
+            break;
+          case 7:
+            admin = null;
+            System.out.println("Logged out successfully!!");
+            break;
+          default:
+            System.out.println("Invalid choice!!");
+        }
+      } catch (Exception e) {
+        System.out.println("Exception caught--->");
+        e.printStackTrace();
+      }
+    }
   }
 }

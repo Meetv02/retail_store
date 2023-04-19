@@ -94,103 +94,6 @@ public class Main {
         "-----------------------------------------------------------------------------------");
   }
 
-  public static void AdmindisplayProductCatalog(
-      ArrayList<Product> productArrayList) {
-    System.out.println(
-        "--------------------------------- Product Catalog ---------------------------------");
-    System.out.println(
-        "Product ID\tProduct Name \t Product Qty \t Availability \t Base price \t Sell price \t Discount price \t Return limit");
-
-    String avail;
-    if (productArrayList.size() != 0) {
-
-      for (Product p : productArrayList) {
-        if (p.getpQty() > 0)
-          avail = "In Stock";
-        else
-          avail = "Out of Stock";
-        System.out.println(
-            "   " +
-                p.getpId() +
-                "\t\t     " +
-                p.getpName() +
-                "\t\t " +
-                p.getpQty() +
-                "\t    " + avail + " \t      " +
-                p.getBasePrice() +
-                " \t\t  " +
-                p.getSellPrice() +
-                "\t\t  " +
-                p.getDiscoutPrice() + "\t\t\t" + p.getLimit());
-      }
-    } else {
-      System.out.println("No product available");
-    }
-    System.out.println(
-        "-----------------------------------------------------------------------------------");
-  }
-
-  public static void AdminLogin(
-      Admin admin,
-      ArrayList<RegisteredUsers> registeredUsers,
-      ArrayList<Product> productArrayList) {
-    Scanner scan = new Scanner(System.in);
-    while (admin != null) {
-      System.out.println(
-          "------------------------------------ Admin Panel ----------------------------------");
-      System.out.println("1--->Registered Users");
-      System.out.println("2--->Add Product");
-      System.out.println("3--->Display Products");
-      System.out.println("4--->Total Products");
-      System.out.println("5--->Maximum Profit");
-      System.out.println("6--->Calculate Fine");
-      System.out.println("7--->LogOut");
-      System.out.println(
-          "-----------------------------------------------------------------------------------");
-
-      try {
-        System.out.println("Enter your choice : ");
-        int ch = scan.nextInt();
-
-        switch (ch) {
-          case 1:
-            admin.DisplayRegUsers(registeredUsers);
-            break;
-          case 2:
-            admin.addProduct(productArrayList);
-            break;
-          case 3:
-            AdmindisplayProductCatalog(productArrayList);
-            break;
-          case 4:
-            int total = admin.totalProduct(productArrayList);
-            System.out.println("Total Availble Products : " + total);
-            break;
-          case 5:
-            int mProfit = admin.maxProfit(productArrayList);
-            System.out.println("Maximum profit :  " + mProfit);
-            break;
-          case 6:
-            if (registeredUsers.size() == 0) {
-              System.out.println("No users registered!!");
-            } else {
-              admin.fineCalculate(registeredUsers);
-            }
-            break;
-          case 7:
-            admin = null;
-            System.out.println("Logged out successfully!!");
-            break;
-          default:
-            System.out.println("Invalid choice!!");
-        }
-      } catch (Exception e) {
-        System.out.println("Excepetion caught--->");
-        e.printStackTrace();
-      }
-    }
-  }
-
   private static boolean isUsernameTaken(
       ArrayList<RegisteredUsers> registeredUsers,
       String username) {
@@ -216,17 +119,14 @@ public class Main {
   public static void main(String[] args) {
     Console console;
     Scanner scan = new Scanner(System.in);
-    InputStreamReader r = new InputStreamReader(System.in);
-    BufferedReader br = new BufferedReader(r);
-    System.out.println();
 
     // Store Books data
     ArrayList<Product> productArrayList = new ArrayList<>();
-    ArrayList<RegisteredUsers> regUsers = new ArrayList<>();
-    regUsers = fileIO.readUsers("users.txt");
-    if (fileIO.readProduct("products.txt") != null) {
-      productArrayList = fileIO.readProduct("products.txt");
-     }
+    ArrayList<RegisteredUsers> regUsers;
+//    regUsers = fileIO.readUsers("users.txt");
+//    if (fileIO.readProduct("products.txt") != null) {
+//      productArrayList = fileIO.readProduct("products.txt");
+//     }
 
     int ch = 0;
 
@@ -244,44 +144,48 @@ public class Main {
             System.out.println(
                 "------------------------------------- Log In --------------------------------------");
             System.out.println("Enter Username : ");
-            String curruname = br.readLine();
+            String curruname = scan.next();
             System.out.println("Enter Password : ");
             String currupwd = readPassword();
 
             // Log in and get the current user's object
-            currUser = Login(curruname, currupwd, regUsers);
-
-            if (currUser == null) {
-              System.out.println(
-                  "-----------------------------------------------------------------------------------");
-              System.out.println("1-->Forgot Password");
-              System.out.println("2-->Back to Main Menu");
-              System.out.println(
-                  "-----------------------------------------------------------------------------------");
-
-              ch = scan.nextInt();
-
-              // Retry , i.e start from the beginning
-              if (ch == 2)
-                continue;
-
-              // Forgot password
-              System.out.println("Enter the username : ");
-              String findUser = br.readLine();
-              boolean status = forgotPassword(findUser, regUsers);
-
-              if (status == true)
+            if (fileIO.readUsers("users.txt") != null) {
+              regUsers = fileIO.readUsers("users.txt");
+              currUser = Login(curruname, currupwd, regUsers);
+              if (currUser == null) {
                 System.out.println(
-                    "Password updated successfully");
-              else
+                        "-----------------------------------------------------------------------------------");
+                System.out.println("1-->Forgot Password");
+                System.out.println("2-->Back to Main Menu");
                 System.out.println(
-                    "Password not updated or Username not found");
+                        "-----------------------------------------------------------------------------------");
+
+                ch = scan.nextInt();
+
+                // Retry , i.e start from the beginning
+                if (ch == 2)
+                  continue;
+
+                // Forgot password
+                System.out.println("Enter the username : ");
+                String findUser = scan.next();
+                boolean status = forgotPassword(findUser, regUsers);
+
+                if (status == true) {
+                  fileIO.writeUsers("users.txt", regUsers);
+                  System.out.println("Password updated successfully");
+                }else {
+                  System.out.println("Password not updated or Username not found");
+                }
+              }
+            }else{
+              System.out.println("User Not Registered");
             }
 
             break;
           case 2:
             System.out.println("Username : ");
-            curruname = br.readLine();
+            curruname = scan.next();
             System.out.println("Password : ");
             currupwd = readPassword();
 
@@ -289,27 +193,53 @@ public class Main {
             if (curruname.equals("admin") && currupwd.equals("admin")) {
               Admin admin = new Admin(curruname, currupwd);
               System.out.println("Admin Login successful!!");
-
-              AdminLogin(admin, regUsers, productArrayList);
+              Admin.AdminLogin(admin);
             } else {
               System.out.println("Admin Login Failed");
             }
             break;
           case 3:
-            System.out.println(
-                "------------------------------------ Registration ---------------------------------");
+            System.out.println("------------------------------------ Registration ---------------------------------");
 
             System.out.println("Enter Full name : ");
-            String regufullname = br.readLine();
+            String regufullname = scan.next();
             System.out.println("Enter Username : ");
-            String reguuname = br.readLine();
+            String reguuname = scan.next();
+            regUsers=null;
+            if (fileIO.readUsers("users.txt") != null) {
+              regUsers = fileIO.readUsers("users.txt");
+              if (isUsernameTaken(regUsers, regufullname)) {
+                System.out.println("Username is already taken, please try again with a different username");
+              } else {
+                System.out.println("Enter Password : ");
+                String regupwd = scan.next();
 
-            if (isUsernameTaken(regUsers, regufullname)) {
-              System.out.println(
-                  "Username is already taken, please try again with a different username");
-            } else {
+                System.out.println("Want to be a member(1-->yes/0-->No) : ");
+                int ismem = scan.nextInt();
+                boolean member;
+                if (ismem == 1)
+                  member = true;
+                else
+                  member = false;
+
+                RegisteredUsers newuser = new RegisteredUsers(
+                        reguuname,
+                        regupwd,
+                        regufullname,
+                        member);
+                regUsers.add(newuser);
+                fileIO.writeUsers("users.txt", regUsers);
+                System.out.println("User Successfully registered.........");
+//              ListIterator<RegisteredUsers> iterate = regUsers.listIterator();
+//              while (iterate.hasNext()) {
+//                RegisteredUsers u = iterate.next();
+//                System.out.println(u.getFullName());
+//                System.out.println(u.getuName());
+//              }
+              }
+            }else{
               System.out.println("Enter Password : ");
-              String regupwd = br.readLine();
+              String regupwd = scan.next();
 
               System.out.println("Want to be a member(1-->yes/0-->No) : ");
               int ismem = scan.nextInt();
@@ -320,26 +250,18 @@ public class Main {
                 member = false;
 
               RegisteredUsers newuser = new RegisteredUsers(
-                  reguuname,
-                  regupwd,
-                  regufullname,
-                  member);
+                      reguuname,
+                      regupwd,
+                      regufullname,
+                      member);
               regUsers.add(newuser);
-              // fileIO.writeUsers("users.txt", regUsers);
+              fileIO.writeUsers("users.txt", regUsers);
               System.out.println("User Successfully registered.........");
-              //
-              ListIterator<RegisteredUsers> iterate = regUsers.listIterator();
-              while (iterate.hasNext()) {
-                RegisteredUsers u = iterate.next();
-                System.out.println(u.getFullName());
-                System.out.println(u.getuName());
-              }
             }
-
             break;
           case 4:
-            fileIO.writeUsers("users.txt", regUsers);
-            fileIO.writeProduct("products.txt", productArrayList);
+//            fileIO.writeUsers("users.txt", regUsers);
+//            fileIO.writeProduct("products.txt", productArrayList);
             System.exit(0);
             break;
           default:
@@ -350,7 +272,12 @@ public class Main {
         // Perform the operations untill the user is logged in
         while (currUser != null) {
           // Display the available books in the store
-          displayProductCatalog(productArrayList);
+          if (fileIO.readProduct("products.txt") != null) {
+            productArrayList = fileIO.readProduct("products.txt");
+            displayProductCatalog(productArrayList);
+          }else{
+            System.out.println("No products To Display");
+          }
 
           System.out.println(
               "-----------------------------------------------------------------------------------");
@@ -367,7 +294,13 @@ public class Main {
             switch (logichoice) {
               // Show profile
               case 1:
-                currUser.ShowProfile();
+                regUsers = fileIO.readUsers("users.txt");
+                for(RegisteredUsers user : regUsers){
+                  if(user.getuName().equals(currUser.getuName())){
+                    user.ShowProfile();
+                    break;
+                  }
+                }
                 System.out.println(
                     "-----------------------------------------------------------------------------------");
                 System.out.println("1-->Back");
@@ -398,9 +331,19 @@ public class Main {
                   System.out.println("please enter valid book id...");
                 } else {
                   if (foundproduct.getpQty() > 0) {
-                    currUser.PurchaseProduct(foundproduct);
+//                    currUser.PurchaseProduct(foundproduct);
+                    regUsers = fileIO.readUsers("users.txt");
+                    for(RegisteredUsers user : regUsers){
+                      if(user.getuName().equals(currUser.getuName())){
+                        user.PurchaseProduct(foundproduct);
+//                        user.ShowProfile();
+                        fileIO.writeUsers("users.txt",regUsers);
+                        break;
+                      }
+                    }
                     System.out.println("Product purchaased successfully!!");
                     foundproduct.decreaseQtyby(1);
+                    fileIO.writeProduct("products.txt",productArrayList);
                   } else {
                     System.out.println("Out of Stock!!");
                   }
@@ -408,13 +351,21 @@ public class Main {
                 break;
               // Return/Cancel Product
               case 3:
-                System.out.println(
-                    "Enter the product id which you want to return ");
+                System.out.println("Enter the product id which you want to return ");
                 proId = scan.nextInt();
-
-                foundproduct = currUser.ReturnProduct(proId);
+                foundproduct = null;
+//                foundproduct = currUser.ReturnProduct(proId);
+                regUsers = fileIO.readUsers("users.txt");
+                for(RegisteredUsers user : regUsers){
+                  if(user.getuName().equals(currUser.getuName())){
+                    foundproduct = user.ReturnProduct(proId);
+                    fileIO.writeUsers("users.txt",regUsers);
+                    break;
+                  }
+                }
                 if (foundproduct != null) {
                   foundproduct.increaseQtyby(1);
+                  fileIO.writeProduct("products.txt",productArrayList);
                   System.out.println("Product returned successfully!!");
                 } else {
                   System.out.println("Product returned failed!!");
