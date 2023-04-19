@@ -37,30 +37,27 @@ class RegisteredUsers extends User {
 
   public void ShowProfile() {
     String ismemb;
-    if (getMember())
-      ismemb = "Yes";
-    else
-      ismemb = "No";
-    System.out.printf("%-30s %-30s %-30s%n", "Full Name", "User Name", "Memeber");
-    System.out.println(
-        getFullName() +
-            "         " +
-            getuName() +
-            "         " + ismemb);
+    if (getMember()) ismemb = "Yes"; else ismemb = "No";
 
-    // System.out.print("Products Bought : ");
+    //System.out.println(getFullName() + "         " + getuName() + "         " + ismemb);
+    System.out.println("---------------------------------- User Profile -----------------------------------");
+    System.out.println("Full Name : " + getFullName());
+    System.out.println("User Name : " + getuName());
+    System.out.println("Member    : " + ismemb);
+    System.out.println();
+
 
     ListIterator<Product> iterate = boughtProducts.listIterator();
-    System.out.println("------------------------------------- Products Bought --------------------------------");
+    System.out.println("---------------------------------- Products Bought --------------------------------");
+    System.out.println();
     System.out.printf("%-30s %-30s %-30s%n", "Product Name", "Product Id", "Price");
     System.out.println("-----------------------------------------------------------------------------------");
     while (iterate.hasNext()) {
       Product products = iterate.next();
-      System.out.print(products.getpName() + "  " + products.getpId() + "  " + products.getBasePrice());
+      System.out.printf("%-30s %-30d %-30d%n",products.getpName(),products.getpId(),products.getBasePrice());
       System.out.println();
     }
-    System.out.print(
-        "-----------------------------------------------------------------------------------");
+    System.out.println();
   }
 
   public void PurchaseProduct(Product p) throws Exception {

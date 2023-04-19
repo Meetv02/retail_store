@@ -29,23 +29,64 @@ public class Main {
   public static RegisteredUsers Login(
       String curruname,
       String currupwd,
-      ArrayList<RegisteredUsers> registeredUsers) {
-    ListIterator<RegisteredUsers> iterate = registeredUsers.listIterator();
-    while (iterate.hasNext()) {
-      RegisteredUsers u = iterate.next();
-      if (u.getuName().equals(curruname) && u.getuPwd().equals(currupwd)) {
-        System.out.println("Successfully Logged in.........");
-        System.out.println();
-        return u;
+      ArrayList<RegisteredUsers> registeredUsers)
+      {
+        ListIterator<RegisteredUsers> iterate = registeredUsers.listIterator();
+        while (iterate.hasNext())
+        {
+          RegisteredUsers u = iterate.next();
+          if (u.getuName().equals(curruname) && u.getuPwd().equals(currupwd))
+          {
+            System.out.println("Successfully Logged in.........");
+            System.out.println();
+            return u;
+          }
+        }
+        return null;
       }
+
+  //Function to validate password
+  public static boolean isValidPassword(String regupwd) {
+    try{
+      boolean hasLetter = false;
+      boolean hasUpperCase = false;
+      boolean hasLowerCase = false;
+      boolean hasDigit = false;
+
+      for (int i = 0; i < regupwd.length(); i++) {
+        char c = regupwd.charAt(i);
+
+        //checking if character is letter
+        if (Character.isLetter(c)) {
+          hasLetter = true;
+        }
+
+        //checking if character is uppercase
+        if (Character.isUpperCase(c)) {
+          hasUpperCase = true;
+        }
+
+        if (Character.isLowerCase(c)) {
+          hasLowerCase = true;
+        }
+        //checking if character is Number
+        if (Character.isDigit(c)) {
+          hasDigit = true;
+        }
+      }
+      return hasLetter && hasUpperCase && hasLowerCase && hasDigit && regupwd.length() >= 6;
+
+    }catch(Exception e){
+      System.out.println("Something went wrong"+e);
+      return false;
     }
-    return null;
   }
 
   // Forgot password
   public static boolean forgotPassword(
       String findUser,
-      ArrayList<RegisteredUsers> registeredUsers) throws IOException {
+      ArrayList<RegisteredUsers> registeredUsers) throws IOException
+  {
     // Searches for the username
     int found = 0;
     ListIterator<RegisteredUsers> iterate = registeredUsers.listIterator();
@@ -68,28 +109,18 @@ public class Main {
       ArrayList<Product> productArrayList) {
     System.out.println(
         "--------------------------------- Product Catalog ---------------------------------");
-    System.out.println(
-        "Product ID \t Product Name \t Product Qty \t Availability \tSell price \t Discount price \t Return limit");
+    System.out.println();    
+    System.out.printf("%-20s %-20s %-20s %-20s %-20s %-20s %-20s%n", "Product ID","Product Name", "Product Qty", "Availability","Base price","Sell price","Discount price","Return limit");
+    System.out.println();
     String avail;
     for (Product p : productArrayList) {
       if (p.getpQty() > 0)
         avail = "In Stock";
       else
         avail = "Out of Stock";
-      System.out.println(
-          "   " +
-              p.getpId() +
-              "\t\t" +
-              p.getpName() +
-              "\t\t" +
-              p.getpQty() +
-              "\t    " + avail + " \t      " +
-              p.getSellPrice() +
-              "\t\t" +
-              p.getDiscoutPrice() +
-              "\t\t" +
-              p.getLimit());
+      System.out.printf("%-20d %-20s %-20d %-20s %-20d %-20d %-20d%n",p.getpId(),p.getpName(),p.getpQty(),avail,p.getBasePrice(),p.getSellPrice(),p.getDiscoutPrice(),p.getLimit());
     }
+    System.out.println();
     System.out.println(
         "-----------------------------------------------------------------------------------");
   }
@@ -118,6 +149,7 @@ public class Main {
 
   public static void main(String[] args) {
     Console console;
+    Console cnl=System.console();
     Scanner scan = new Scanner(System.in);
 
     // Store Books data
@@ -129,9 +161,11 @@ public class Main {
 //     }
 
     int ch = 0;
-
+    System.out.println("----------------------------- Welcome to the book store ---------------------------");
     while (true) {
       try {
+        System.out.println();
+        System.out.println("------------------------------------- Main Menu -----------------------------------");
         System.out.println("1--->User Login");
         System.out.println("2--->Admin Login");
         System.out.println("3--->Register");
@@ -201,21 +235,45 @@ public class Main {
           case 3:
             System.out.println("------------------------------------ Registration ---------------------------------");
 
+            char[] regupwd ;
+            scan.nextLine();
             System.out.println("Enter Full name : ");
-            String regufullname = scan.next();
+            String regufullname = scan.nextLine();
+            while (regufullname.length() < 1) {
+              System.out.println("-----------------------------------");
+              System.out.println("| Error: Please Enter the Name    |");
+              System.out.println("-----------------------------------");
+              System.out.println("Enter Full name: ");
+              regufullname = scan.nextLine();
+            }
             System.out.println("Enter Username : ");
-            String reguuname = scan.next();
+            String reguuname = scan.nextLine();
             regUsers=new ArrayList<>();
             if (fileIO.readUsers("users.txt") != null) {
               regUsers = fileIO.readUsers("users.txt");
               if (isUsernameTaken(regUsers, regufullname)) {
-                System.out.println("Username is already taken, please try again with a different username");
+                System.out.println("-->Error: Username is already taken, please try again with a different username");
               } else {
-                System.out.println("Enter Password : ");
-                String regupwd = scan.next();
+                
+                 regupwd = cnl.readPassword("Enter Password : ");
+                while (!isValidPassword( new String(regupwd))){
+                  System.out.println("-------------------------------------------------------------------------------------------------------");
+                  System.out.println("Password must contain 6 characters long, one lowercase letter, one uppercase letter, and one digit.    ");
+                  System.out.println("-------------------------------------------------------------------------------------------------------");
+                  regupwd = cnl.readPassword("Enter  password:");
+                  System.out.println("-----------------------------------------------------------------------------------");
+                }
+
+
 
                 System.out.println("Want to be a member(1-->yes/0-->No) : ");
                 int ismem = scan.nextInt();
+                while(ismem > 1){
+                  System.out.println("Please enter 0 or 1");
+                  System.out.println("Want to be a member(1-->yes/0-->No) : ");
+                  ismem = scan.nextInt();
+                }
+
                 boolean member;
                 if (ismem == 1)
                   member = true;
@@ -224,7 +282,7 @@ public class Main {
 
                 RegisteredUsers newuser = new RegisteredUsers(
                         reguuname,
-                        regupwd,
+                        new String(regupwd),
                         regufullname,
                         member);
                 regUsers.add(newuser);
@@ -238,11 +296,26 @@ public class Main {
 //              }
               }
             }else{
-              System.out.println("Enter Password : ");
-              String regupwd = scan.next();
+              //System.out.println("Enter Password : ");
+                regupwd = cnl.readPassword("Enter Password : ");
+                
+                while (!isValidPassword( new String(regupwd))){
+                  System.out.println("-------------------------------------------------------------------------------------------------------");
+                  System.out.println("Password must contain 6 characters long, one lowercase letter, one uppercase letter, and one digit.    ");
+                  System.out.println("-------------------------------------------------------------------------------------------------------");
+                  regupwd = cnl.readPassword("Enter  password:");
+                  System.out.println("-----------------------------------------------------------------------------------");
+                }
+                
+
 
               System.out.println("Want to be a member(1-->yes/0-->No) : ");
               int ismem = scan.nextInt();
+              while(ismem > 1){
+                System.out.println("Please enter 0 or 1");
+                System.out.println("Want to be a member(1-->yes/0-->No) : ");
+                ismem = scan.nextInt();
+              }
               boolean member;
               if (ismem == 1)
                 member = true;
@@ -251,12 +324,13 @@ public class Main {
 
               RegisteredUsers newuser = new RegisteredUsers(
                       reguuname,
-                      regupwd,
+                      new String(regupwd),
                       regufullname,
                       member);
               regUsers.add(newuser);
               fileIO.writeUsers("users.txt", regUsers);
-              System.out.println("User Successfully registered.........");
+              System.out.println();
+              System.out.println("-->User Successfully registered.........");
             }
             break;
           case 4:
@@ -276,7 +350,7 @@ public class Main {
             productArrayList = fileIO.readProduct("products.txt");
             displayProductCatalog(productArrayList);
           }else{
-            System.out.println("No products To Display");
+            System.out.println("-->No products To Display");
           }
 
           System.out.println(
@@ -314,21 +388,22 @@ public class Main {
                 // Logout
                 if (profilechoice == 2) {
                   currUser = null;
-                  System.out.println("Successfully Logged Out!!");
+                  System.out.println("-->Successfully Logged Out!!");
                 }
 
                 break;
               // Issue/Purchase Product
               case 2:
                 System.out.println(
-                    "Enter the product id which you want to purchase");
+                    "Enter the product id which you want to purchase - ");
                 int proId = scan.nextInt();
 
                 // Find the book and purchase the book
                 Product foundproduct = findProduct(proId, productArrayList);
 
                 if (foundproduct == null) {
-                  System.out.println("please enter valid book id...");
+                  System.out.println();
+                  System.out.println("-->please enter valid book id...");
                 } else {
                   if (foundproduct.getpQty() > 0) {
 //                    currUser.PurchaseProduct(foundproduct);
@@ -341,11 +416,13 @@ public class Main {
                         break;
                       }
                     }
-                    System.out.println("Product purchaased successfully!!");
+                    System.out.println();
+                    System.out.println("-->Product purchaased successfully!!");
                     foundproduct.decreaseQtyby(1);
                     fileIO.writeProduct("products.txt",productArrayList);
                   } else {
-                    System.out.println("Out of Stock!!");
+                    System.out.println();
+                    System.out.println("-->Out of Stock!!");
                   }
                 }
                 break;
@@ -364,23 +441,10 @@ public class Main {
                 }
                 System.out.println(
                     "--------------------------------- Purchased Product ---------------------------------");
-                System.out.println(
-                    "Product ID \t Product Name \t Product Qty \tSell price \t Discount price \t Return limit");
-
+                System.out.printf("%-20s %-20s %-20s %-20s %-20s %-20s%n","Product ID","Product Name","Product Qty","Sell price","Discount price" , "Return limit");
+                System.out.println();
                 for (Product product : currUser.boughtProducts) {
-                  System.out.println(
-                      "   " +
-                          product.getpId() +
-                          "\t\t" +
-                          product.getpName() +
-                          "\t\t" +
-                          product.getpQty() +
-                          "\t\t " +
-                          product.getSellPrice() +
-                          "\t\t" +
-                          product.getDiscoutPrice() +
-                          "\t\t" +
-                          product.getLimit());
+                  System.out.printf("%-20d %-20s %-20d %-20d %-20d %-20d%n",product.getpId(),product.getpName(),product.getpQty(),product.getSellPrice(),product.getDiscoutPrice(),product.getLimit());
                 }
                 
                 System.out.println("Enter the product id which you want to return ");
@@ -403,26 +467,31 @@ public class Main {
                       break;
                     }
                   }
-                  // foundproduct.increaseQtyby(1);
-                  System.out.println("Product returned successfully!!");
+                  
+                  System.out.println();
+                  System.out.println("--> Product returned successfully!!");
                 } else {
-                  System.out.println("Product not found!!");
+                  System.out.println();
+                  System.out.println("--> Product not found!!");
                 }
                 break;
               // Log out
               case 4:
                 currUser = null;
+                System.out.println();
                 System.out.println("Successfully Logged Out!!");
                 break;
               default:
                 break;
             }
           } catch (Exception e) {
+            System.out.println();
             System.out.println("Error Caught--->" + e);
             scan.nextLine();
           }
         }
       } catch (Exception e) {
+        System.out.println();
         System.out.println("Exception caught-->" + e);
       }
     }

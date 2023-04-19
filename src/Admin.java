@@ -118,8 +118,8 @@ class Admin implements adminInterface {
 
   void DisplayRegUsers(ArrayList<RegisteredUsers> regUsers) {
     System.out.println(
-        "------------------------------------- User Profile --------------------------------");
-    System.out.println("Full Name  User Name   Password  isMember? ");
+        "---------------------------------- Users Profile ----------------------------------");
+    //System.out.println("Full Name  User Name   Password  isMember? ");
     System.out.println(
         "-----------------------------------------------------------------------------------");
     for (RegisteredUsers u : regUsers) {
@@ -134,8 +134,8 @@ class Admin implements adminInterface {
       ArrayList<Product> productArrayList) {
     System.out.println(
         "--------------------------------- Product Catalog ---------------------------------");
-    System.out.println(
-        "Product ID\tProduct Name \t Product Qty \t Availability \t Base price \t Sell price \t Discount price \t Return limit");
+    System.out.println();
+    System.out.printf("%-20s %-20s %-20s %-20s %-20s %-20s %-20s%n", "Product ID","Product Name", "Product Qty", "Availability","Base price","Sell price","Discount price","Return limit");
 
     String avail;
     if (productArrayList.size() != 0) {
@@ -145,19 +145,7 @@ class Admin implements adminInterface {
           avail = "In Stock";
         else
           avail = "Out of Stock";
-        System.out.println(
-            "   " +
-                p.getpId() +
-                "\t\t     " +
-                p.getpName() +
-                "\t\t " +
-                p.getpQty() +
-                "\t    " + avail + " \t      " +
-                p.getBasePrice() +
-                " \t\t  " +
-                p.getSellPrice() +
-                "\t\t  " +
-                p.getDiscoutPrice() + "\t\t\t" + p.getLimit());
+        System.out.printf("%-20d %-20s %-20d %-20s %-20d %-20d %-20d%n",p.getpId(),p.getpName(),p.getpQty(),avail,p.getBasePrice(),p.getSellPrice(),p.getDiscoutPrice(),p.getLimit());
       }
     } else {
       System.out.println("No product available");
