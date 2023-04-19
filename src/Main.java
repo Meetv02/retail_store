@@ -351,11 +351,43 @@ public class Main {
                 break;
               // Return/Cancel Product
               case 3:
+                regUsers = fileIO.readUsers("users.txt");
+                for (RegisteredUsers user : regUsers) {
+                  if (user.getuName().equals(currUser.getuName())) {
+                    currUser = user;
+                    break;
+                  }
+                }
+                if (currUser.boughtProducts.size() == 0) {
+                  System.out.println("You haven't bought Any Product yet!!");
+                  break;
+                }
+                System.out.println(
+                    "--------------------------------- Purchased Product ---------------------------------");
+                System.out.println(
+                    "Product ID \t Product Name \t Product Qty \tSell price \t Discount price \t Return limit");
+
+                for (Product product : currUser.boughtProducts) {
+                  System.out.println(
+                      "   " +
+                          product.getpId() +
+                          "\t\t" +
+                          product.getpName() +
+                          "\t\t" +
+                          product.getpQty() +
+                          "\t\t " +
+                          product.getSellPrice() +
+                          "\t\t" +
+                          product.getDiscoutPrice() +
+                          "\t\t" +
+                          product.getLimit());
+                }
+                
                 System.out.println("Enter the product id which you want to return ");
                 proId = scan.nextInt();
                 foundproduct = null;
 //                foundproduct = currUser.ReturnProduct(proId);
-                regUsers = fileIO.readUsers("users.txt");
+                
                 for(RegisteredUsers user : regUsers){
                   if(user.getuName().equals(currUser.getuName())){
                     foundproduct = user.ReturnProduct(proId);
@@ -364,11 +396,17 @@ public class Main {
                   }
                 }
                 if (foundproduct != null) {
-                  foundproduct.increaseQtyby(1);
-                  fileIO.writeProduct("products.txt",productArrayList);
+                  for (Product product : productArrayList) {
+                    if (product.getpId() == proId) {
+                      product.increaseQtyby(1);
+                      fileIO.writeProduct("products.txt", productArrayList);
+                      break;
+                    }
+                  }
+                  // foundproduct.increaseQtyby(1);
                   System.out.println("Product returned successfully!!");
                 } else {
-                  System.out.println("Product returned failed!!");
+                  System.out.println("Product not found!!");
                 }
                 break;
               // Log out
