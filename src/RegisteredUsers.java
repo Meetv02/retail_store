@@ -10,11 +10,10 @@ class RegisteredUsers extends User {
   private LocalDate returnDate;
 
   public RegisteredUsers(
-    String uName,
-    String uPwd,
-    String fullName,
-    boolean isMember
-  ) {
+      String uName,
+      String uPwd,
+      String fullName,
+      boolean isMember) {
     super(uName, uPwd, fullName, isMember);
   }
 
@@ -31,42 +30,42 @@ class RegisteredUsers extends User {
 
     this.issueDate = issueDate;
   }
+
   public void setReturnDate(LocalDate returnDate) {
     this.returnDate = returnDate;
   }
 
   public void ShowProfile() {
     String ismemb;
-    if (getMember()) ismemb = "Yes"; else ismemb = "No";
-
+    if (getMember())
+      ismemb = "Yes";
+    else
+      ismemb = "No";
+    System.out.printf("%-30s %-30s %-30s%n", "Full Name", "User Name", "Memeber");
     System.out.println(
-      getFullName() +
-      "         " +
-      getuName() +
-      "         " +
-      getuPwd() +
-      "           " +
-      ismemb
-    );
+        getFullName() +
+            "         " +
+            getuName() +
+            "         " + ismemb);
 
-    System.out.print("Products Bought : ");
+    // System.out.print("Products Bought : ");
+
     ListIterator<Product> iterate = boughtProducts.listIterator();
+    System.out.println("------------------------------------- Products Bought --------------------------------");
+    System.out.printf("%-30s %-30s %-30s%n", "Product Name", "Product Id", "Price");
+    System.out.println("-----------------------------------------------------------------------------------");
     while (iterate.hasNext()) {
-      System.out.print((iterate.next()).getpName() + "  ");
+      Product products = iterate.next();
+      System.out.print(products.getpName() + "  " + products.getpId() + "  " + products.getBasePrice());
+      System.out.println();
     }
-    System.out.println();
     System.out.print(
-      "-----------------------------------------------------------------------------------"
-    );
+        "-----------------------------------------------------------------------------------");
   }
 
   public void PurchaseProduct(Product p) throws Exception {
-    Scanner scanner = new Scanner(System.in);
-    System.out.println("Please enter the date (format: yyyy-MM-dd):");
-    String dateStr = scanner.next();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    LocalDate date = LocalDate.parse(dateStr, formatter);
-    issueDate = date;
+
+    issueDate = LocalDate.now();
 
     boughtProducts.add(p);
     temp.add(p);
@@ -74,12 +73,7 @@ class RegisteredUsers extends User {
 
   public Product ReturnProduct(int id) throws Exception {
 
-    Scanner scanner = new Scanner(System.in);
-    System.out.println("Please enter the date (format: yyyy-MM-dd):");
-    String dateStr = scanner.next();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    LocalDate date = LocalDate.parse(dateStr, formatter);
-    returnDate = date;
+    returnDate = LocalDate.now();
 
     ListIterator<Product> iterate = boughtProducts.listIterator();
     while (iterate.hasNext()) {
