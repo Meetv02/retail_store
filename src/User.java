@@ -5,6 +5,7 @@ abstract class User implements Serializable{
     private String uPwd;
     private String fullName;
     private boolean isMember;
+    private int fine = 0;
 
     public ArrayList<Product> boughtProducts = new ArrayList<Product>();
     public ArrayList<Product> temp = new ArrayList<Product>();
@@ -31,8 +32,16 @@ abstract class User implements Serializable{
     public void setPassword(String pwd){
         uPwd=pwd;
     }
-    public boolean getMember(){
+
+    public boolean getMember() {
         return isMember;
     }
 
+    public void setFine(int fine) {
+        this.fine += fine;
+    }
+
+    public int getFine() {
+        return fine;
+    }
 }

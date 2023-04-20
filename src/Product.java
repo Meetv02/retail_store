@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.time.LocalDate;
 
 public class Product implements Serializable {
 
@@ -10,6 +11,9 @@ public class Product implements Serializable {
   private int discoutPrice;
   private int limit;
 
+  private LocalDate issueDate;
+  private LocalDate returnDate;
+  
   public Product(
     int pId,
     String pName,
@@ -64,5 +68,21 @@ public class Product implements Serializable {
 
   public int getLimit() {
     return limit;
+  }
+
+  public LocalDate getIssueDate() {
+    return issueDate;
+  }
+
+  public LocalDate getReturnDate() {
+    return returnDate;
+  }
+
+  public void setIssueDate(LocalDate issueDate) {
+    this.issueDate = issueDate;
+  }
+
+  public void setReturnDate(LocalDate returnDate) {
+    this.returnDate = returnDate;
   }
 }
