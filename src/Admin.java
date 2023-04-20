@@ -105,12 +105,12 @@ class Admin implements adminInterface {
         int finePerDay = 50;
         LocalDate issueDt = p.getIssueDate();
         LocalDate returnDt = p.getReturnDate();
-        // int lateDays = (returnDt.getDay() - issueDt.getDay()) - maxReturnLimit;
-        ChronoUnit ChronoUnit = null;
-        int lateDays =(int) ChronoUnit.DAYS.between(returnDt, issueDt);
-        if ((lateDays-maxReturnLimit)>0) {
-          fine = (lateDays - maxReturnLimit) * finePerDay;
-          regusr.setFine(fine);
+        if(returnDt!=null){
+          long lateDays = ChronoUnit.DAYS.between(issueDt, returnDt);
+          if ((lateDays-maxReturnLimit)>0) {
+            fine = (int)(lateDays - maxReturnLimit) * finePerDay;
+            regusr.setFine(fine);
+          }
         }
       }
       System.out.println(regusr.getuName() + "  Total fine: " + regusr.getFine());
