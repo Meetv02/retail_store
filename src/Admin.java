@@ -28,14 +28,12 @@ class Admin implements adminInterface {
   public void addProduct(ArrayList<Product> productArrayList)
       throws IOException {
     Scanner sc = new Scanner(System.in);
-    InputStreamReader r = new InputStreamReader(System.in);
-    BufferedReader br = new BufferedReader(r);
 
     System.out.println("Welcome, admin!");
     System.out.println("Please enter the product information:");
 
     System.out.print("Product Name: ");
-    String productName = br.readLine();
+    String productName = sc.nextLine();
 
     System.out.print("Total quantity: ");
     int qty = sc.nextInt();
@@ -66,10 +64,6 @@ class Admin implements adminInterface {
         sellprice,
         discountprice,
         lmt);
-    // System.out.println(newProduct.getpId() + " " + newProduct.getBasePrice() + "
-    // " + newProduct.getDiscoutPrice() + " " + newProduct.getpName() + " " +
-    // newProduct.getpQty() + " " + newProduct.getSellPrice() + " " +
-    // newProduct.getLimit());
     productArrayList.add(newProduct);
     fileIO.writeProduct("products.txt", productArrayList);
   }
@@ -98,7 +92,7 @@ class Admin implements adminInterface {
     while (iterate.hasNext()) {
       int fine = 0;
       RegisteredUsers regusr = iterate.next();
-      ListIterator<Product> pr = regusr.temp.listIterator();
+      ListIterator<Product> pr = regusr.boughtProducts.listIterator();
       while (pr.hasNext()) {
         Product p = pr.next();
         int maxReturnLimit = p.getLimit();

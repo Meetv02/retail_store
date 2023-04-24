@@ -21,7 +21,6 @@ class RegisteredUsers extends User {
     else
       ismemb = "No";
 
-    // System.out.println(getFullName() + " " + getuName() + " " + ismemb);
     System.out.println("---------------------------------- User Profile -----------------------------------");
     System.out.println("Full Name : " + getFullName());
     System.out.println("User Name : " + getuName());

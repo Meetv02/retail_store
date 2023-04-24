@@ -155,11 +155,6 @@ public class Main {
     ArrayList<Product> productArrayList = new ArrayList<>();
     ArrayList<RegisteredUsers> regUsers;
 
-    // regUsers = fileIO.readUsers("users.txt");
-    // if (fileIO.readProduct("products.txt") != null) {
-    // productArrayList = fileIO.readProduct("products.txt");
-    // }
-
     int ch = 0;
     System.out.println("----------------------------- Welcome to the book store ---------------------------");
     while (true) {
@@ -251,7 +246,7 @@ public class Main {
             regUsers = new ArrayList<>();
             if (fileIO.readUsers("users.txt") != null) {
               regUsers = fileIO.readUsers("users.txt");
-              if (isUsernameTaken(regUsers, regufullname)) {
+              if (isUsernameTaken(regUsers, reguuname)) {
                 System.out.println("-->Error: Username is already taken, please try again with a different username");
               } else {
 
@@ -290,12 +285,6 @@ public class Main {
                 regUsers.add(newuser);
                 fileIO.writeUsers("users.txt", regUsers);
                 System.out.println("User Successfully registered.........");
-                // ListIterator<RegisteredUsers> iterate = regUsers.listIterator();
-                // while (iterate.hasNext()) {
-                // RegisteredUsers u = iterate.next();
-                // System.out.println(u.getFullName());
-                // System.out.println(u.getuName());
-                // }
               }
             } else {
               // System.out.println("Enter Password : ");
@@ -338,8 +327,6 @@ public class Main {
             }
             break;
           case 4:
-            // fileIO.writeUsers("users.txt", regUsers);
-            // fileIO.writeProduct("products.txt", productArrayList);
             System.exit(0);
             break;
           default:
@@ -379,6 +366,7 @@ public class Main {
                     break;
                   }
                 }
+
                 System.out.println(
                     "-----------------------------------------------------------------------------------");
                 System.out.println("1-->Back");
@@ -407,7 +395,7 @@ public class Main {
 
                 if (foundproduct == null) {
                   System.out.println();
-                  System.out.println("-->please enter valid book id...");
+                  System.out.println("-->please enter valid Product id...");
                 } else {
                   if (foundproduct.getpQty() > 0) {
                     // currUser.PurchaseProduct(foundproduct);
@@ -415,7 +403,6 @@ public class Main {
                     for (RegisteredUsers user : regUsers) {
                       if (user.getuName().equals(currUser.getuName())) {
                         user.PurchaseProduct(foundproduct);
-                        // user.ShowProfile();
                         fileIO.writeUsers("users.txt", regUsers);
                         break;
                       }
@@ -468,6 +455,7 @@ public class Main {
                     break;
                   }
                 }
+
                 if (foundproduct != null) {
                   for (Product product : productArrayList) {
                     if (product.getpId() == proId) {

@@ -6,9 +6,7 @@ public class fileIO {
     public static void writeUsers(String fileName, ArrayList<RegisteredUsers> regUsers) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
             oos.writeObject(regUsers);
-            // System.out.println("user information written to file successfully!");
             oos.flush();
-            oos.close();
         } catch (IOException ex) {
             System.out.println("An error occurred while writing user information to file: ");
             ex.printStackTrace();
